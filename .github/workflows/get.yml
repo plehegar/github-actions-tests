@@ -1,0 +1,38 @@
+name: Manipulations for HTTP GET
+
+on:
+  workflow_dispatch:  # Allows manual triggering
+  issues:
+    types: [opened]
+
+jobs:
+  hrepos:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Retrieve the list of common labels
+        run: |
+          DATA=`curl --fail -o labels.json "https://w3c.github.io/common-labels.json"`
+
+      - name: Extract horizontal repositories
+        id: extract
+        run: |
+          REPOS=$(jq -r '[.[]."repo-request"] | map(select(.!=null)) | unique' labels.json)
+
+          # Store values with proper newline handling
+          echo "extracted_values<<EOF" >> $GITHUB_OUTPUT
+          echo "$VALUES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+    
+      # Example usage of extracted values
+      - name: Process values
+        run: |
+          echo "Extracted values list:"
+          echo "${{ steps.extract.outputs.extracted_values }}"
+
+          # Example: Iterate through values
+          echo "${{ steps.extract.outputs.extracted_values }}" | while read -r item; do
+            echo "Processing item: $item"
+            # Add your custom processing here
+          done
+        
