@@ -6,7 +6,7 @@ on:
     types: [opened]
 
 jobs:
-  matrix-hrepos:
+  matrix-repos:
     runs-on: ubuntu-latest
 
     outputs:
@@ -27,7 +27,7 @@ jobs:
 
   do-something:
     runs-on: ubuntu-latest
-    needs: matrix-hrepos
+    needs: matrix-repos
     strategy:
       matrix:
         repo: ${{ fromJSON(needs.matrix-repos.outputs.repos) }}
