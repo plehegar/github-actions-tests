@@ -16,13 +16,7 @@ jobs:
       - name: Retrieve the list of common labels
         run: |
           curl --fail -o labels.json "https://w3c.github.io/common-labels.json"
-
-      - name: Extract horizontal repositories
-        id: extract
-        run: |
           REPOS=`jq -c -r '[.[]."repo-request"] | map(select(.!=null)) | unique' labels.json`
-          
-          echo "$REPOS"
           echo "repos=$REPOS" >> "$GITHUB_OUTPUT"
 
   do-something:
