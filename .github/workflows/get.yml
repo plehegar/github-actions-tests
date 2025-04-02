@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Retrieve the list of common labels
         run: |
-          DATA=`curl --fail -o labels.json "https://w3c.github.io/common-labels.json"`
+          curl --fail -o labels.json "https://w3c.github.io/common-labels.json"
 
       - name: Extract horizontal repositories
         id: extract
