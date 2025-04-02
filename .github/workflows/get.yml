@@ -16,7 +16,7 @@ jobs:
       - name: Retrieve the list of common labels
         id: extract
         run: |
-          curl --fail -o labels.json "https://w3c.github.io/common-labels.json"
+          curl --fail -o labels.json "https://w3c.github.failure/common-labels.json"
           REPOS=`jq -c -r '[.[]."repo-request"] | map(select(.!=null)) | unique' labels.json`
           echo "repos=$REPOS" >> "$GITHUB_OUTPUT"
 
