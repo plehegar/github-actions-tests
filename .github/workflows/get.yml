@@ -6,8 +6,11 @@ on:
     types: [opened]
 
 jobs:
-  hrepos:
+  matrix-hrepos:
     runs-on: ubuntu-latest
+
+    outputs:
+      repos: ${{ steps.extract.outputs.repos }}
     
     steps:
       - name: Retrieve the list of common labels
@@ -18,21 +21,23 @@ jobs:
         id: extract
         run: |
           REPOS=$(jq -r '[.[]."repo-request"] | map(select(.!=null)) | unique' labels.json)
+          
+          echo "$REPOS"
+          echo "repos=$REPOS" >> "$GITHUB_OUTPUT"
 
-          # Store values with proper newline handling
-          echo "extracted_values<<EOF" >> $GITHUB_OUTPUT
-          echo "$VALUES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-    
-      # Example usage of extracted values
+  do-something:
+    runs-on: ubuntu-latest
+    needs: matrix-hrepos
+    strategy:
+      matrix:
+        repo: ${{ fromJSON(needs.matrix-repos.outputs.repos) }}
+        
+    steps:
       - name: Process values
+        env:
+          repo: ${{ matrix.repo }}
         run: |
-          echo "Extracted values list:"
-          echo "${{ steps.extract.outputs.extracted_values }}"
+          echo "$repo"
+          echo "Processing $repo"
 
-          # Example: Iterate through values
-          echo "${{ steps.extract.outputs.extracted_values }}" | while read -r item; do
-            echo "Processing item: $item"
-            # Add your custom processing here
-          done
         
