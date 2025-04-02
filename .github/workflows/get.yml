@@ -33,7 +33,7 @@ jobs:
         repo: ${{ fromJSON(needs.matrix-repos.outputs.repos) }}
         
     steps:
-      - name: Process values
+      - name: Process ${{ matrix.repo }}
         env:
           repo: ${{ matrix.repo }}
         run: |
