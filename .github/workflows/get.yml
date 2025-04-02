@@ -20,7 +20,7 @@ jobs:
       - name: Extract horizontal repositories
         id: extract
         run: |
-          REPOS=$(jq -c -r '[.[]."repo-request"] | map(select(.!=null)) | unique' labels.json)
+          REPOS=`jq -c -r '[.[]."repo-request"] | map(select(.!=null)) | unique' labels.json`
           
           echo "$REPOS"
           echo "repos=$REPOS" >> "$GITHUB_OUTPUT"
