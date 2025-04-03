@@ -32,7 +32,14 @@ jobs:
         env:
           repo: ${{ matrix.repo }}
         run: |
-          echo "$repo"
-          echo "Processing $repo"
+          cat << EOF > body.txt
+          blob
+          § ${{ repo }}
+        
+          blob2
+        
+          ${{ github.event }}
+          EOF
+          cat body.txt
 
         
