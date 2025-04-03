@@ -34,7 +34,7 @@ jobs:
         run: |
           cat << EOF > body.txt
           blob
-          § ${{ repo }}
+          § $repo
         
           blob2
         
