@@ -31,6 +31,7 @@ jobs:
     - name: Create issue payload file
       env:
         ISSUE_CONTEXT: ${{ toJSON(github.event.issue) }}
+        ISSUE_BODY: ${{ toJSON(github.event.issue.body) }}
       run: echo "$ISSUE_CONTEXT" > issue.json
 
     - name: create issue in ${{ matrix.repo }}
@@ -39,6 +40,19 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.W3CBOT_TOKEN }}
       run: |
         ASSIGNEES=$(jq -c -r '.assignees.[].login' issue.json | sed -s 's/^/cc @/')
-        echo $ASSIGNEES
+        cat << EOF > body.txt
+        This issue was created because the 'horizontal review requested' label was added to
+        § ${{ github.event.issue.html_url }}
+        
+        This review is requested prior to the [Advisory Committee Review](https://www.w3.org/guide/process/charter.html#ac-review).
+        
+        ${{ github.event.issue.body }}
+
+        ## Charter facilitator(s)
+        
+        $ASSIGNEES
+        EOF
+        echo "-------------------END OF CAT"
+        cat body.txt
 
         
