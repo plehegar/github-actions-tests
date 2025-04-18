@@ -3,7 +3,7 @@ name: Manipulations for HTTP GET
 on:
   workflow_dispatch:  # Allows manual triggering
   issues:
-    types: [opened]
+    types: [labeled]
 
 jobs:
   matrix-repos:
@@ -28,18 +28,17 @@ jobs:
         repo: ${{ fromJSON(needs.matrix-repos.outputs.repos) }}
         
     steps:
-      - name: Process ${{ matrix.repo }}
-        env:
-          repo: ${{ matrix.repo }}
-        run: |
-          cat << EOF > body.txt
-          blob
-          § $repo
-        
-          blob2
-        
-          ${{ github.event }}
-          EOF
-          cat body.txt
+    - name: Create issue payload file
+      env:
+        ISSUE_CONTEXT: ${{ toJSON(github.event.issue) }}
+      run: echo "$ISSUE_CONTEXT" > issue.json
+
+    - name: create issue in ${{ matrix.repo }}
+      env:
+        repo: ${{ matrix.repo }}
+        GITHUB_TOKEN: ${{ secrets.W3CBOT_TOKEN }}
+      run: |
+        cat issue.json
+        ASSIGNEES=$(jq -c -r '.assignees.[].login' issue.json | sed -s 's/^/cc @/')
 
         
