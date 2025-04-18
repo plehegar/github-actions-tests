@@ -39,6 +39,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.W3CBOT_TOKEN }}
       run: |
         ASSIGNEES=$(jq -c -r '.assignees.[].login' issue.json | sed -s 's/^/cc @/')
-        cat $ASSIGNEES
+        echo $ASSIGNEES
 
         
