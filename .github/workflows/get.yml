@@ -40,5 +40,6 @@ jobs:
       run: |
         cat issue.json
         ASSIGNEES=$(jq -c -r '.assignees.[].login' issue.json | sed -s 's/^/cc @/')
+        cat $ASSIGNEES
 
         
