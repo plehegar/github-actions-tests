@@ -38,7 +38,6 @@ jobs:
         repo: ${{ matrix.repo }}
         GITHUB_TOKEN: ${{ secrets.W3CBOT_TOKEN }}
       run: |
-        cat issue.json
         ASSIGNEES=$(jq -c -r '.assignees.[].login' issue.json | sed -s 's/^/cc @/')
         cat $ASSIGNEES
 
