@@ -31,13 +31,13 @@ jobs:
     - name: Create issue payload file
       env:
         ISSUE_CONTEXT: ${{ toJSON(github.event.issue) }}
-        ISSUE_BODY: ${{ toJSON(github.event.issue.body) }}
       run: echo "$ISSUE_CONTEXT" > issue.json
 
     - name: create issue in ${{ matrix.repo }}
       env:
         repo: ${{ matrix.repo }}
         GITHUB_TOKEN: ${{ secrets.W3CBOT_TOKEN }}
+        ISSUE_BODY: ${{ github.event.issue.body }}
       run: |
         ASSIGNEES=$(jq -c -r '.assignees.[].login' issue.json | sed -s 's/^/cc @/')
         cat << EOF > body.txt
@@ -46,8 +46,9 @@ jobs:
         
         This review is requested prior to the [Advisory Committee Review](https://www.w3.org/guide/process/charter.html#ac-review).
         
-        ${{ github.event.issue.body }}
-
+        EOF
+        echo "$ISSUE_BODY" >> body.txt
+        cat << EOF >> body.txt
         ## Charter facilitator(s)
         
         $ASSIGNEES
